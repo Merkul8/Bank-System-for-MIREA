@@ -57,7 +57,7 @@ class PhisycalUser(models.Model):
     patronymic = models.CharField(verbose_name = 'Отчество', max_length=100, null=False)
     birth_day = models.DateField(verbose_name = 'Дата рождения', null=False)
     address = models.CharField(verbose_name = 'Адрес прописки', max_length=100, null=False)
-    number = PhoneNumberField(verbose_name = 'Номер телефона', null=False, unique=True)
+    number = PhoneNumberField(verbose_name = 'Номер телефона', null=False)
     gender = models.CharField(verbose_name = 'Пол', max_length=5, choices=GENDER_CHOICES, null=False)
     photo = models.ImageField(verbose_name = 'Аватар', upload_to='photos/%Y/%m/%d/', null=True, blank=True)
     is_stuff = models.BooleanField(verbose_name = 'Сотрудник банка', default=False)
@@ -102,7 +102,7 @@ class Account(models.Model):
         help_text='Номер счета (для чековых начинается с символов “101-“, для сберегательных – с символов “102-”)'
     )
     created_at = models.DateTimeField(verbose_name = 'Дата и время создания', auto_now_add=True)
-    balance = models.DecimalField(verbose_name = 'Баланс', max_digits=10, decimal_places=2)
+    balance = models.DecimalField(verbose_name = 'Баланс', max_digits=10, decimal_places=2, default=0)
     account_type = models.ForeignKey(AccountType, on_delete=models.SET_NULL, null=True)
     
     def __str__(self):

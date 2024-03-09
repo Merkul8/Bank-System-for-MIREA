@@ -1,21 +1,37 @@
-from rest_framework import generics
+from rest_framework import generics, permissions
 
 from service.serializers import (
     UserSerializer,
-    UserSerializerTest
+    UserCreationSerializer,
+    AccountSerializer
 )
-from service.models import Client
+from service.models import Client, Account
 
 
 
-class UserView(generics.RetrieveAPIView):
-    """ Личный кабинет пользователя """
-    queryset = Client.objects.all().prefetch_related('typelistuser', 'physicalusers', 'legalusers')
+class UserView(generics.ListAPIView):
+    """ Список всех пользователей банка """
+    queryset = Client.objects.all()
     serializer_class = UserSerializer
+    permission_classes = [permissions.IsAuthenticated]
 
 
 class UserCreationView(generics.CreateAPIView):
-    queryset = Client.objects.all().prefetch_related('physicalusers')
-    serializer_class = UserSerializerTest
+    """ Представление создания пользователя, поумолчанию создается аккаунт для физ. лица """
+    queryset = Client.objects.all()
+    serializer_class = UserCreationSerializer
 
 
+class UserRUDView(generics.RetrieveUpdateDestroyAPIView):
+    """ Все возможные операции с пользователем (retrieve, update, destroy) """
+    queryset = Client.objects.all()
+    serializer_class = UserSerializer
+
+
+class AccountCreationView(generics.CreateAPIView):
+    """ Создание счета """
+    queryset = Account.objects.all()
+    serializer_class = AccountSerializer
+
+# Если счет создается в первый раз, создаем listaccount и typelistuser 
+# для данного пользователя, в противном случае добавляем в уже существующие

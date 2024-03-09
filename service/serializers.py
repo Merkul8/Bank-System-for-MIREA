@@ -1,5 +1,7 @@
 from rest_framework import serializers
 
+import logging
+
 from service.models import (
     TypeListUser,
     TypeUser,
@@ -11,20 +13,30 @@ from service.models import (
 )
 
 
+logger = logging.getLogger(__name__) 
+
+
 class AccountSerializer(serializers.ModelSerializer):
-    account_type = serializers.StringRelatedField()
 
     class Meta:
         model = Account
-        fields = '__all__'
+        exclude = ['created_at']
+        read_only_fields = ['balance', 'account_number']
+
+    def create(self, validated_data):
+        account_id = validated_data.get('account_id')
+        
+        user = self.context['request'].user
+        account = ListAccount.objects.create(account_id=account_id, type_list_user=user)
+        return account
 
 
 class ListAccountSerializer(serializers.ModelSerializer):
-    account = AccountSerializer(read_only=True)
+    account = AccountSerializer()
 
     class Meta:
         model = ListAccount
-        fields = ['id', 'account']
+        fields = ['account']
 
 
 class TypeUserSerializer(serializers.ModelSerializer):
@@ -35,7 +47,7 @@ class TypeUserSerializer(serializers.ModelSerializer):
 
 class TypeListUserSerializer(serializers.ModelSerializer):
     type_user = serializers.StringRelatedField()
-    type_list_user_account = ListAccountSerializer(many=True, read_only=True)
+    type_list_user_account = ListAccountSerializer(many=True)
 
     class Meta:
         model = TypeListUser
@@ -55,20 +67,23 @@ class LegalUserSerializer(serializers.ModelSerializer):
 
 
 class UserSerializer(serializers.ModelSerializer):
-    typelistuser = TypeListUserSerializer(many=True, read_only=True)
-    physicalusers = PhisycalUserSerializer(many=True, read_only=True)
-    legalusers = LegalUserSerializer(many=True, read_only=True)
+    typelistuser = TypeListUserSerializer(many=True)
+    physicalusers = PhisycalUserSerializer(many=True)
+    legalusers = LegalUserSerializer(many=True)
 
     class Meta:
         model = Client
         fields = (
+            'id',
             'username', 
             'typelistuser', 
             'physicalusers', 
             'legalusers'
             )
-        
-class UserSerializerTest(serializers.ModelSerializer):
+
+
+class UserCreationSerializer(serializers.ModelSerializer):
+    """ Сериалайзер для модели Client и PhisycalUser """
     physicalusers = PhisycalUserSerializer(many=True)
 
     class Meta:
@@ -86,7 +101,9 @@ class UserSerializerTest(serializers.ModelSerializer):
         if password:
             user.set_password(password)
             user.save()
-            print(f'{physicalusers} and type - {type(physicalusers)}')
-        for physicaluser in physicalusers:
-            PhisycalUser.objects.create(user=user, **physicaluser)
+            logger.info(f'{physicalusers} and type - {type(physicalusers)}')
+        [PhisycalUser.objects.create(user=user, **physicaluser) for physicaluser in physicalusers]
+
+        type_user = TypeUser.objects.get(name='physical')
+        TypeListUser.objects.create(user=user, type_user=type_user)
         return user
