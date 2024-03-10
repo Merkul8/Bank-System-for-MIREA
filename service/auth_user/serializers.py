@@ -15,6 +15,7 @@ class CustomUserCreationSerializer(UserCreateSerializer):
         # Создаем пользователя
         user = super().create(validated_data)
 
+        # Прикрепляем type_list_user
         type_user = TypeUser.objects.get(name='physical')
         TypeListUser.objects.create(user=user, type_user=type_user)
 

@@ -29,11 +29,14 @@ class AccountSerializer(serializers.ModelSerializer):
         # Получаем аутентифицированного пользователя
         user = self.context['request'].user
         if user.is_authenticated:
-            # Находим или создаем TypeListUser для аутентифицированного пользователя
+            # Создаем TypeListUser для аутентифицированного пользователя
             type_list_user = TypeListUser.objects.get(user=user)
             
-            # Создаем ListAccount с правильным типом пользователя
-            ListAccount.objects.create(account=account, type_list_user=type_list_user)
+            # Создаем ListAccount 
+            list_account = ListAccount.objects.create(account=account, type_list_user=type_list_user)
+            logger.info(
+                f'Account {account.account_number} was created in ListAccount id {list_account.id}'
+                )
             return account
         else:
             raise serializers.ValidationError("Пользователь не аутентифицирован")
@@ -65,7 +68,12 @@ class TypeListUserSerializer(serializers.ModelSerializer):
 class PhisycalUserSerializer(serializers.ModelSerializer):
     class Meta:
         model = PhisycalUser
-        exclude = ['user']
+        exclude = ['is_stuff', 'user']
+
+    def create(self, validated_data):
+        user = self.context['request'].user
+        phisycal_user = PhisycalUser.objects.create(user=user, **validated_data)
+        return phisycal_user
 
 
 class LegalUserSerializer(serializers.ModelSerializer):

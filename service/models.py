@@ -48,7 +48,7 @@ class TypeListUser(models.Model):
     user = models.ForeignKey(Client, on_delete=models.CASCADE, null=False, related_name='typelistuser')
 
     def __str__(self) -> str:
-        return f'USER - {self.user.username}, ID - {self.pk}, TYPE - {self.type_user}'
+        return f'{self.user.username} - {self.type_user}'
 
 
 class PhisycalUser(models.Model):
@@ -64,7 +64,7 @@ class PhisycalUser(models.Model):
     user = models.ForeignKey(Client, on_delete=models.CASCADE, null=True, related_name='physicalusers')
 
     def __str__(self) -> str:
-        return str(self.number)
+        return f'{self.user.username} {str(self.number)}'
     
 
 class LegalUser(models.Model):
@@ -82,7 +82,7 @@ class LegalUser(models.Model):
     user = models.ForeignKey(Client, on_delete=models.CASCADE, null=True, related_name='legalusers')
     
     def __str__(self) -> str:
-        return str(self.number)
+        return f'{self.user.username} {str(self.number)}'
 
 
 class AccountType(models.Model):
@@ -106,7 +106,7 @@ class Account(models.Model):
     account_type = models.ForeignKey(AccountType, on_delete=models.SET_NULL, null=True)
     
     def __str__(self):
-        return f'{str(self.account_number)} {self.created_at.strftime("%Y-%m-%d %H:%M:%S")}'
+        return f'{str(self.account_number[:3])} {self.created_at.strftime("%Y-%m-%d %H:%M:%S")}'
 
     def save(self, *args, **kwargs):
         # Генерация уникального номера счета
@@ -128,7 +128,7 @@ class ListAccount(models.Model):
         )
 
     def __str__(self) -> str:
-        return f'ID - {self.pk} TYPE - {self.account}'
+        return f'{self.type_list_user.user.username} {self.account}'
 
 
 class Payment(models.Model):
