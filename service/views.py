@@ -2,8 +2,7 @@ from rest_framework import generics, permissions
 
 from service.serializers import (
     UserSerializer,
-    UserCreationSerializer,
-    AccountSerializer
+    AccountSerializer,
 )
 from service.models import Client, Account
 
@@ -11,19 +10,6 @@ from service.models import Client, Account
 
 class UserView(generics.ListAPIView):
     """ Список всех пользователей банка """
-    queryset = Client.objects.all()
-    serializer_class = UserSerializer
-    permission_classes = [permissions.IsAuthenticated]
-
-
-class UserCreationView(generics.CreateAPIView):
-    """ Представление создания пользователя, поумолчанию создается аккаунт для физ. лица """
-    queryset = Client.objects.all()
-    serializer_class = UserCreationSerializer
-
-
-class UserRUDView(generics.RetrieveUpdateDestroyAPIView):
-    """ Все возможные операции с пользователем (retrieve, update, destroy) """
     queryset = Client.objects.all()
     serializer_class = UserSerializer
 

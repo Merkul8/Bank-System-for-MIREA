@@ -106,7 +106,7 @@ class Account(models.Model):
     account_type = models.ForeignKey(AccountType, on_delete=models.SET_NULL, null=True)
     
     def __str__(self):
-        return str(self.account_number)
+        return f'{str(self.account_number)} {self.created_at.strftime("%Y-%m-%d %H:%M:%S")}'
 
     def save(self, *args, **kwargs):
         # Генерация уникального номера счета

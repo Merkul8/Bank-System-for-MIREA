@@ -31,8 +31,8 @@ INSTALLED_APPS = [
     
     'rest_framework',
     'rest_framework.authtoken',
-    'phonenumber_field',
     'djoser',
+    'phonenumber_field',
 
     'service',
 ]
@@ -168,7 +168,9 @@ DJOSER = {
     'USERNAME_RESET_CONFIRM_URL': '#/username/reset/confirm/{uid}/{token}',
     'ACTIVATION_URL': '#/activate/{uid}/{token}',
     'SEND_ACTIVATION_EMAIL': True,
-    'SERIALIZERS': {},
+    'SERIALIZERS': {
+        'user_create': 'service.auth_user.serializers.CustomUserCreationSerializer',
+    },
 }
 
 # simple_jwt

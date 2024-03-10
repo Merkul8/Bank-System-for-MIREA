@@ -24,11 +24,19 @@ class AccountSerializer(serializers.ModelSerializer):
         read_only_fields = ['balance', 'account_number']
 
     def create(self, validated_data):
-        account_id = validated_data.get('account_id')
+        account = super(AccountSerializer, self).create(validated_data)
         
+        # Получаем аутентифицированного пользователя
         user = self.context['request'].user
-        account = ListAccount.objects.create(account_id=account_id, type_list_user=user)
-        return account
+        if user.is_authenticated:
+            # Находим или создаем TypeListUser для аутентифицированного пользователя
+            type_list_user = TypeListUser.objects.get(user=user)
+            
+            # Создаем ListAccount с правильным типом пользователя
+            ListAccount.objects.create(account=account, type_list_user=type_list_user)
+            return account
+        else:
+            raise serializers.ValidationError("Пользователь не аутентифицирован")
 
 
 class ListAccountSerializer(serializers.ModelSerializer):
@@ -81,29 +89,3 @@ class UserSerializer(serializers.ModelSerializer):
             'legalusers'
             )
 
-
-class UserCreationSerializer(serializers.ModelSerializer):
-    """ Сериалайзер для модели Client и PhisycalUser """
-    physicalusers = PhisycalUserSerializer(many=True)
-
-    class Meta:
-        model = Client
-        fields = [
-            'username',
-            'password',
-            'physicalusers'
-        ]
-        
-    def create(self, validated_data):
-        password = validated_data.pop('password', None)
-        physicalusers = validated_data.pop('physicalusers')
-        user = Client.objects.create(**validated_data)
-        if password:
-            user.set_password(password)
-            user.save()
-            logger.info(f'{physicalusers} and type - {type(physicalusers)}')
-        [PhisycalUser.objects.create(user=user, **physicaluser) for physicaluser in physicalusers]
-
-        type_user = TypeUser.objects.get(name='physical')
-        TypeListUser.objects.create(user=user, type_user=type_user)
-        return user
