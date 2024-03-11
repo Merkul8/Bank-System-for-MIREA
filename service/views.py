@@ -1,9 +1,11 @@
-from rest_framework import generics, permissions
+from rest_framework import generics, permissions, status, viewsets
+from rest_framework.response import Response
 
 from service.serializers import (
     UserSerializer,
     AccountSerializer,
-    PhisycalUserSerializer
+    PhisycalUserSerializer,
+    LegalUserSerializer
 )
 from service.models import (
     Client,
@@ -28,15 +30,8 @@ class AccountCreationView(generics.CreateAPIView):
     permission_classes = [permissions.IsAuthenticated]
 
 
-class PhisycalUserCreationView(generics.CreateAPIView):
-    """ Создание физ. лица по пользователю. """
-    queryset = PhisycalUser.objects.all()
-    serializer_class = PhisycalUserSerializer
-    permission_classes = [permissions.IsAuthenticated]
-
-
-class PhisycalListByUserView(generics.ListAPIView):
-    """ Список всех зарегистрированных физ. лиц по пользователю. """
+class PhisycalUserCRUDSet(viewsets.ModelViewSet):
+    """ CRUD операции с моделью физ. лиц. """
     serializer_class = PhisycalUserSerializer
     permission_classes = [permissions.IsAuthenticated]
 
@@ -45,8 +40,11 @@ class PhisycalListByUserView(generics.ListAPIView):
         return queryset
 
 
-class PhisycalUserRUDView(generics.RetrieveUpdateDestroyAPIView):
-    """ Обновление, удаление и просмотр данных по физическому лицу. """
-    queryset = PhisycalUser.objects.all()
-    serializer_class = PhisycalUserSerializer
+class LegalUserCRUDSet(viewsets.ModelViewSet):
+    """ CRUD операции с моделью юр. лиц. """
+    serializer_class = LegalUserSerializer
     permission_classes = [permissions.IsAuthenticated]
+
+    def get_queryset(self):
+        queryset = LegalUser.objects.filter(user=self.request.user)
+        return queryset

@@ -68,7 +68,7 @@ class TypeListUserSerializer(serializers.ModelSerializer):
 class PhisycalUserSerializer(serializers.ModelSerializer):
     class Meta:
         model = PhisycalUser
-        exclude = ['is_stuff', 'user']
+        exclude = ['id','is_stuff', 'user']
 
     def create(self, validated_data):
         user = self.context['request'].user
