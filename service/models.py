@@ -72,7 +72,7 @@ class LegalUser(models.Model):
     address = models.CharField(verbose_name = 'Адрес организации', max_length=100, null=False)
     boss_full_name = models.CharField(verbose_name = 'ФИО директора', max_length=100, null=False)
     accountant_full_name = models.CharField(verbose_name = 'ФИО главного бухгалтера', max_length=100, null=False)
-    number = PhoneNumberField(verbose_name = 'Контактный номер', null=False, unique=True)
+    number = PhoneNumberField(verbose_name = 'Контактный номер', null=False)
     form_of_ownership = models.CharField(
         verbose_name = 'Форма организации', 
         max_length=100, 

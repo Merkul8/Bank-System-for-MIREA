@@ -1,5 +1,4 @@
-from rest_framework import generics, permissions, status, viewsets
-from rest_framework.response import Response
+from rest_framework import generics, permissions, viewsets
 
 from service.serializers import (
     UserSerializer,

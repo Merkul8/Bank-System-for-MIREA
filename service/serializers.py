@@ -79,7 +79,12 @@ class PhisycalUserSerializer(serializers.ModelSerializer):
 class LegalUserSerializer(serializers.ModelSerializer):
     class Meta:
         model = LegalUser
-        exclude = ['user']
+        exclude = ['id', 'user']
+
+    def create(self, validated_data):
+        user = self.context['request'].user
+        phisycal_user = LegalUser.objects.create(user=user, **validated_data)
+        return phisycal_user
 
 
 class UserSerializer(serializers.ModelSerializer):
