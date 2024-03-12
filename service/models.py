@@ -136,3 +136,4 @@ class Payment(models.Model):
     list_account = models.ForeignKey(ListAccount, on_delete=models.CASCADE, related_name='payment_account')
     amount = models.DecimalField(max_digits=10, decimal_places=2, verbose_name='Сумма платежа')
     is_paid_for = models.BooleanField(verbose_name = 'Статус оплаты', default=False)
+    created_at = models.DateTimeField(auto_now_add=True, null=True)

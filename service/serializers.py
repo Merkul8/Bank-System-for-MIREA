@@ -9,7 +9,8 @@ from service.models import (
     PhisycalUser,
     ListAccount,
     Account,
-    Client
+    Client,
+    Payment
 )
 
 
@@ -85,6 +86,12 @@ class LegalUserSerializer(serializers.ModelSerializer):
         user = self.context['request'].user
         phisycal_user = LegalUser.objects.create(user=user, **validated_data)
         return phisycal_user
+    
+
+class PaymentSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Payment
+        fields = ['id', 'transaction_code', 'list_account', 'amount', 'is_paid_for', 'created_at']
 
 
 class UserSerializer(serializers.ModelSerializer):

@@ -4,13 +4,15 @@ from service.serializers import (
     UserSerializer,
     AccountSerializer,
     PhisycalUserSerializer,
-    LegalUserSerializer
+    LegalUserSerializer,
+    PaymentSerializer
 )
 from service.models import (
     Client,
     Account, 
     PhisycalUser, 
-    LegalUser
+    LegalUser,
+    Payment
 )
 
 
@@ -47,3 +49,7 @@ class LegalUserCRUDSet(viewsets.ModelViewSet):
     def get_queryset(self):
         queryset = LegalUser.objects.filter(user=self.request.user)
         return queryset
+    
+
+class PaymentCreationView(generics.CreateAPIView):
+    ...
