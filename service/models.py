@@ -35,6 +35,14 @@ class Client(AbstractUser):
         related_query_name="client",
     )
 
+    def check_payments_and_update_debtor_status(self):
+        # Проверяем, есть ли у пользователя платежи с is_paid_for=False
+        unpaid_payments = Payment.objects.filter(list_account__type_list_user__user=self, is_paid_for=False)
+        if not unpaid_payments.exists():
+            # Если нет неоплаченных платежей, обновляем статус is_debtor на False
+            self.is_debtor = True
+            self.save()
+
 
 class TypeUser(models.Model):
     name = models.CharField(verbose_name = 'Тип пользователя', max_length=100, choices=USER_TYPE_CHOICES)
@@ -137,3 +145,10 @@ class Payment(models.Model):
     amount = models.DecimalField(max_digits=10, decimal_places=2, verbose_name='Сумма платежа')
     is_paid_for = models.BooleanField(verbose_name = 'Статус оплаты', default=False)
     created_at = models.DateTimeField(auto_now_add=True, null=True)
+
+    def __str__(self) -> str:
+        return f'{self.list_account.account.account_type} {self.is_paid_for}'
+    
+    @staticmethod
+    def get_user_accounts(user):
+        return ListAccount.objects.filter(type_list_user__user=user)

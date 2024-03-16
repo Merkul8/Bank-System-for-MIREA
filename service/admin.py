@@ -1,6 +1,7 @@
 from django.contrib import admin
 
 from service.models import (
+    Payment,
     TypeListUser,
     PhisycalUser,
     LegalUser,
@@ -19,3 +20,4 @@ admin.site.register(LegalUser)
 admin.site.register(AccountType)
 admin.site.register(Account)
 admin.site.register(ListAccount)
+admin.site.register(Payment)

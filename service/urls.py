@@ -5,7 +5,8 @@ from service import views
 
 urlpatterns = [
     path('users/', views.UserView.as_view(), name='user'),
-    path('accounts/create/', views.AccountCreationView.as_view(), name='add-account'),
+    path('accounts/create/phy/', views.PhysicalAccountCreationView.as_view(), name='add-phy-account'),
+    path('accounts/create/leg/', views.LegalAccountCreationView.as_view(), name='add-leg-account'),
     path('phisycal/list/', views.PhisycalUserCRUDSet.as_view({'get': 'list'}), name='phisycal-list'),
     path(
         'phisycal/<int:pk>/', 
@@ -24,4 +25,7 @@ urlpatterns = [
         name='legal'
         ),
     path('legal/create/', views.LegalUserCRUDSet.as_view({'post': 'create'}), name='legal-creation'),
+    path('payments/create/', views.PaymentCreationView.as_view(), name='payment-creation'),
+    path('payments/list/', views.PaymentListView.as_view(), name='payment-list'),
+    path('list-accounts/list/', views.ListAccountListView.as_view(), name='list-account'),
 ]
