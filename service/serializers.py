@@ -41,11 +41,13 @@ class BaseAccountSerializer(serializers.ModelSerializer):
 
 class PhisycalUserAccountSerializer(BaseAccountSerializer):
     def get_type_list_user(self, user):
-        return TypeListUser.objects.get_or_create(user=user, type_user__name='physical')
+        type_list_user, _ = TypeListUser.objects.get_or_create(user=user, type_user__name='physical')
+        return type_list_user
 
 class LegalUserAccountSerializer(BaseAccountSerializer):
     def get_type_list_user(self, user):
-        return TypeListUser.objects.get_or_create(user=user, type_user__name='legal')
+        type_list_user, _ = TypeListUser.objects.get_or_create(user=user, type_user__name='legal')
+        return type_list_user
 
 
 class ListAccountSerializer(serializers.ModelSerializer):
@@ -110,6 +112,7 @@ class PaymentSerializer(serializers.ModelSerializer):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         user = self.context['request'].user
+        user.check_payments_and_update_debtor_status()
         self.fields['list_account'].queryset = Payment.get_user_accounts(user)
 
 
