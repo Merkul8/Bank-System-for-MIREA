@@ -67,6 +67,7 @@ class PaymentCreationView(generics.CreateAPIView):
     serializer_class = PaymentSerializer
     permission_classes = [permissions.IsAuthenticated]
 
+ 
 class PaymentListView(generics.ListAPIView):
     """ Тестовое представление платежа. """
     queryset = Payment.objects.all()

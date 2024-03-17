@@ -35,14 +35,16 @@ class Client(AbstractUser):
         related_query_name="client",
     )
 
-    def check_payments_and_update_debtor_status(self):
+    def check_debtor_status(self):
         # Проверяем, есть ли у пользователя платежи с is_paid_for=False
-        unpaid_payments = Payment.objects.filter(list_account__type_list_user__user=self, is_paid_for=False)
-        if not unpaid_payments.exists():
-            # Если нет неоплаченных платежей, обновляем статус is_debtor на False
+        unpaid_payments = Payment.objects.filter(list_account__type_list_user__user__username=self.username, is_paid_for=False)
+        if unpaid_payments.exists():
             self.is_debtor = True
-            self.save()
-
+        else: 
+            self.is_debtor = False
+        self.save()
+        return self.is_debtor
+    
 
 class TypeUser(models.Model):
     name = models.CharField(verbose_name = 'Тип пользователя', max_length=100, choices=USER_TYPE_CHOICES)
