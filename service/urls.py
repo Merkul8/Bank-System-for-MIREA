@@ -7,15 +7,15 @@ urlpatterns = [
     path('users/', views.UserView.as_view(), name='user'),
     path('accounts/create/phy/', views.PhysicalAccountCreationView.as_view(), name='add-phy-account'),
     path('accounts/create/leg/', views.LegalAccountCreationView.as_view(), name='add-leg-account'),
-    path('phisycal/list/', views.PhisycalUserCRUDSet.as_view({'get': 'list'}), name='phisycal-list'),
+    path('phisycal/list/', views.PhysicalUserCRUDSet.as_view({'get': 'list'}), name='phisycal-list'),
     path(
         'phisycal/<int:pk>/', 
-        views.PhisycalUserCRUDSet.as_view(
+        views.PhysicalUserCRUDSet.as_view(
         {'get': 'retrieve','put': 'update', 'delete': 'destroy'}
         ), 
         name='phisycal'
         ),
-    path('phisycal/create/', views.PhisycalUserCRUDSet.as_view({'post': 'create'}), name='phisycal-creation'),
+    path('phisycal/create/', views.PhysicalUserCRUDSet.as_view({'post': 'create'}), name='phisycal-creation'),
     path('legal/list/', views.LegalUserCRUDSet.as_view({'get': 'list'}), name='legal-list'),
     path(
         'legal/<int:pk>/', 

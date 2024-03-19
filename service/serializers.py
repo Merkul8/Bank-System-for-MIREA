@@ -39,7 +39,7 @@ class BaseAccountSerializer(serializers.ModelSerializer):
     def get_type_list_user(self, user):
         raise NotImplementedError("Subclasses must implement this method.")
 
-class PhisycalUserAccountSerializer(BaseAccountSerializer):
+class PhysicalUserAccountSerializer(BaseAccountSerializer):
     def get_type_list_user(self, user):
         type_list_user, _ = TypeListUser.objects.get_or_create(user=user, type_user__name='physical')
         return type_list_user
@@ -72,7 +72,7 @@ class TypeListUserSerializer(serializers.ModelSerializer):
         fields = ['type_user', 'type_list_user_account']
 
 
-class PhisycalUserSerializer(serializers.ModelSerializer):
+class PhysicalUserSerializer(serializers.ModelSerializer):
     class Meta:
         model = PhisycalUser
         exclude = ['id','is_stuff', 'user']
@@ -98,8 +98,8 @@ class LegalUserSerializer(serializers.ModelSerializer):
             user=user, 
             type_user=TypeUser.objects.get(name='legal')
             )
-        phisycal_user = LegalUser.objects.create(user=user, **validated_data)
-        return phisycal_user
+        legal_user = LegalUser.objects.create(user=user, **validated_data)
+        return legal_user
     
 
 class PaymentSerializer(serializers.ModelSerializer):
@@ -118,7 +118,7 @@ class PaymentSerializer(serializers.ModelSerializer):
 
 class UserSerializer(serializers.ModelSerializer):
     typelistuser = TypeListUserSerializer(many=True)
-    physicalusers = PhisycalUserSerializer(many=True)
+    physicalusers = PhysicalUserSerializer(many=True)
     legalusers = LegalUserSerializer(many=True)
 
     class Meta:

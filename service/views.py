@@ -4,8 +4,8 @@ from service.serializers import (
     ListAccountSerializer,
     UserSerializer,
     LegalUserAccountSerializer,
-    PhisycalUserAccountSerializer,
-    PhisycalUserSerializer,
+    PhysicalUserAccountSerializer,
+    PhysicalUserSerializer,
     LegalUserSerializer,
     PaymentSerializer
 )
@@ -30,7 +30,7 @@ class UserView(generics.ListAPIView):
 class PhysicalAccountCreationView(generics.CreateAPIView):
     """ Создание счета. """
     queryset = Account.objects.all()
-    serializer_class = PhisycalUserAccountSerializer
+    serializer_class = PhysicalUserAccountSerializer
     permission_classes = [permissions.IsAuthenticated]
 
 
@@ -41,9 +41,9 @@ class LegalAccountCreationView(generics.CreateAPIView):
     permission_classes = [permissions.IsAuthenticated]
 
 
-class PhisycalUserCRUDSet(viewsets.ModelViewSet):
+class PhysicalUserCRUDSet(viewsets.ModelViewSet):
     """ CRUD операции с моделью физ. лиц. """
-    serializer_class = PhisycalUserSerializer
+    serializer_class = PhysicalUserSerializer
     permission_classes = [permissions.IsAuthenticated]
 
     def get_queryset(self):
@@ -67,7 +67,7 @@ class PaymentCreationView(generics.CreateAPIView):
     serializer_class = PaymentSerializer
     permission_classes = [permissions.IsAuthenticated]
 
- 
+
 class PaymentListView(generics.ListAPIView):
     """ Тестовое представление платежа. """
     queryset = Payment.objects.all()
